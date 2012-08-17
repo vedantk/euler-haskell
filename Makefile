@@ -9,4 +9,4 @@ all: $(BINARIES)
 	$(HC) $(HCFLAGS) $^
 
 clean:
-	rm $(BINARIES) $(wildcard *.hi) $(wildcard *.o)
+	rm -f $(BINARIES) $(wildcard *.hi) $(wildcard *.o)
