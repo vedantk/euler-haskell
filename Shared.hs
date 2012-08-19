@@ -6,6 +6,16 @@ import Control.Parallel.Strategies
 pmap :: (a -> b) -> [a] -> [b]
 pmap = parMap rpar
 
+fibs = 0 : 1 : zipWith (+) fibs (tail fibs)
+
+fib :: Integer -> Integer
+fib 0 = 1
+fib 1 = 2
+fib n = computeFib 1 2 n
+    where
+        computeFib :: Integer -> Integer -> Integer -> Integer
+        computeFib a b n = if n == 1 then b else computeFib b (a+b) (n-1)
+
 isqrt :: (Integer -> Integer)
 isqrt = round . sqrt . (fromIntegral :: Integer -> Double)
 
