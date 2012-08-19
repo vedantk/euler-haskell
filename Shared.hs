@@ -3,9 +3,10 @@ module Shared where
 import qualified Data.Set as Set
 import Control.Parallel.Strategies
 
-pmap :: (a -> b) -> [a] -> [b]
-pmap = parMap rpar
+allmap :: (a -> Bool) -> [a] -> Bool
+allmap pred li = all id (map pred li)
 
+fibs :: [Integer]
 fibs = 0 : 1 : zipWith (+) fibs (tail fibs)
 
 fib :: Integer -> Integer
@@ -24,7 +25,7 @@ generateDivisors n = [2] ++ [3, 5 .. isqrt n]
 
 prime :: Integer -> Bool
 prime 1 = False
-prime n = all id (map (\ d -> (mod n d) /= 0 || n == d) (generateDivisors n))
+prime n = allmap (\ d -> (mod n d) /= 0 || n == d) (generateDivisors n)
 
 primeFactorsOf :: Integer -> Set.Set Integer
 primeFactorsOf n =
@@ -34,6 +35,11 @@ primeFactorsOf n =
             lhsFactors = filter (\ d -> (mod n d) == 0) (generateDivisors n)
             factors = lhsFactors ++ map (\ f -> n `div` f) lhsFactors
 
+primes :: [Integer]
+primes = 2 : iterate nextPrime 3
+    where nextPrime k = head $ filter isPrime [k + 2, k + 4 ..]
+          isPrime k = allmap (\ d -> (mod k d) /= 0) (takeWhile (\ p -> p^2 <= k) primes)
+          
 toDigits :: Integer -> [Integer]
 toDigits n = map floor (take (fromIntegral nrdigits) quotients)
     where
