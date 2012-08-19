@@ -1,4 +1,4 @@
-fibs = 1 : 2 : zipWith (+) fibs (tail fibs)
+import Shared
 
 evenFibs = [k | k <- fibs, even k]
 

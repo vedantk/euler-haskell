@@ -17,6 +17,9 @@ fib n = computeFib 1 2 n
         computeFib :: Integer -> Integer -> Integer -> Integer
         computeFib a b n = if n == 1 then b else computeFib b (a+b) (n-1)
 
+square :: Integer -> Integer
+square k = k ^ 2
+
 isqrt :: (Integer -> Integer)
 isqrt = round . sqrt . (fromIntegral :: Integer -> Double)
 

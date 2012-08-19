@@ -1,5 +1,4 @@
-square :: Integer -> Integer
-square k = k ^ 2
+import Shared
 
 diff :: Integer -> Integer
 diff n = (square $ sum [1 .. n]) - (sum $ map square [1 .. n])
