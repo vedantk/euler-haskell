@@ -1,10 +1,13 @@
 module Shared where
 
+import Control.Parallel
 import qualified Data.Set as Set
-import Control.Parallel.Strategies
 
 allmap :: (a -> Bool) -> [a] -> Bool
-allmap pred li = all id (map pred li)
+allmap pred li = (rhs' `par` lhs') && rhs'
+    where lhs' = all id (map pred lhs)
+          rhs' = if null rhs then True else allmap pred rhs
+          (lhs, rhs) = splitAt 500 li
 
 fibs :: [Integer]
 fibs = 0 : 1 : zipWith (+) fibs (tail fibs)

@@ -7,6 +7,7 @@ all: $(BINARIES)
 
 %: %.hs
 	$(HC) $(HCFLAGS) $^
+	grep -xq "$@" .gitignore || echo $@ >> .gitignore
 
 clean:
 	rm -f $(BINARIES) $(wildcard *.hi) $(wildcard *.o)
