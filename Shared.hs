@@ -1,13 +1,11 @@
 module Shared where
 
 import Control.Parallel
+import Control.Parallel.Strategies
 import qualified Data.Set as Set
 
 allmap :: (a -> Bool) -> [a] -> Bool
-allmap pred li = (rhs' `par` lhs') && rhs'
-    where lhs' = all id (map pred lhs)
-          rhs' = if null rhs then True else allmap pred rhs
-          (lhs, rhs) = splitAt 500 li
+allmap pred li = all id (map pred li)
 
 fibs :: [Integer]
 fibs = 0 : 1 : zipWith (+) fibs (tail fibs)
@@ -33,6 +31,11 @@ prime :: Integer -> Bool
 prime 1 = False
 prime n = allmap (\ d -> (mod n d) /= 0 || n == d) (generateDivisors n)
 
+primes :: [Integer]
+primes = 2 : iterate nextPrime 3
+    where nextPrime k = head $ filter isPrime [k + 2, k + 4 ..]
+          isPrime k = allmap (\ d -> (mod k d) /= 0) (takeWhile (\ p -> p^2 <= k) primes)
+
 primeFactorsOf :: Integer -> Set.Set Integer
 primeFactorsOf n =
     if prime n then Set.singleton n
@@ -41,11 +44,16 @@ primeFactorsOf n =
             lhsFactors = filter (\ d -> (mod n d) == 0) (generateDivisors n)
             factors = lhsFactors ++ map (\ f -> n `div` f) lhsFactors
 
-primes :: [Integer]
-primes = 2 : iterate nextPrime 3
-    where nextPrime k = head $ filter isPrime [k + 2, k + 4 ..]
-          isPrime k = allmap (\ d -> (mod k d) /= 0) (takeWhile (\ p -> p^2 <= k) primes)
-          
+factorsOf :: Integer -> [Integer]
+factorsOf n = factorsOf' 1 n []
+    where
+        factorsOf' divisor upper factors =
+            if divisor >= upper then factors
+            else if (mod n divisor) /= 0
+                 then factorsOf' (divisor+1) upper factors
+                 else factorsOf' (divisor+1) rfactor (divisor : rfactor : factors)
+                    where rfactor = n `div` divisor
+ 
 toDigits :: Integer -> [Integer]
 toDigits n = map floor (take (fromIntegral nrdigits) quotients)
     where

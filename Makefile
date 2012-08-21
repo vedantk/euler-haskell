@@ -1,7 +1,7 @@
 HC = ghc
 HCFLAGS = -O3 -threaded
 
-BINARIES = $(patsubst %.hs, %, $(wildcard *.hs))
+BINARIES = $(patsubst %.hs, %, $(wildcard p*.hs))
 
 all: $(BINARIES)
 
