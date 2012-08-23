@@ -1,5 +1,5 @@
 HC = ghc
-HCFLAGS = -O3 -threaded
+HCFLAGS = -O3 -threaded -rtsopts
 
 BINARIES = $(patsubst %.hs, %, $(wildcard p*.hs))
 
